@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    @model List<ProductModel>
+    List<ProductModel> modelShop = new List<ProductModel>();
+}
+
+<script>
+    function selectProduct(){
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("index")',
+            data: '{std: ' + JSON.stringify(std) + '}',
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                // alert("Data has been added successfully.");
+                
+            },
+            error: function () {
+                alert("Error while inserting data");
+            }
+        });
+    }
+    function setAmountPlus(id) {
+        var ss = id;
+        alert("Product Name: " + id);
+        
+        $('#lbltest').text(id);
+    }
+    function setAmount(id) {
+        var ss = id;
+        alert("Product Name: " + id);
+    } 
+    $(document).ready(function () {
+        // Convert Razor model to JSON
+        var productData = @Html.Raw(Json.Serialize(Model));
+        $('#sendProductData').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("ReceiveProductData", "YourController")', // Controller action to handle the data
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(productData),
+                success: function (response) {
+                    alert("Product data sent successfully!");
+                    console.log(response);  // Handle the server response
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+    });
+</script>
+
+<div class="container">
+    <label id="lbltest"></label>
+    <div class="row">
+        <table class="table table-active">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        select
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        @*<td>@product.id</td>*@
+                        <td>@product.name</td>
+                        <td>@product.price</td>
+                        <td>
+                            <button type="button" onclick="setAmountPlus('@product.id')"> + </button>
+                            <button type="button" onclick="setAmount('@product.id')"> - </button>
+                        </td>
+                    </tr>
+                }@*
+                <tr>
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        5
+                    </td>
+                </tr>*@
+            </tbody>
+        </table>
+
+        <button id="btn">ชำระเงิน</button>
+    </div>
+</div>
